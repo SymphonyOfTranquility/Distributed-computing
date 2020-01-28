@@ -1,1 +1,1 @@
-Java, Go Concurrency in action 
+Java, Go Concurrency in action
