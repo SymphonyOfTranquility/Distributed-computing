@@ -43,7 +43,7 @@ public class Wood {
 
                if (direction == 2 && yWinnie > 0 || direction == 3 && yWinnie == height-1)
                    yOffSet = -1;
-               if (direction == 1 && yWinnie < height-1 || direction == 4 && yWinnie == 0)
+               if (direction == 3 && yWinnie < height-1 || direction == 2 && yWinnie == 0)
                    yOffSet = 1;
 
                synchronized (winniePosition)
@@ -59,14 +59,20 @@ public class Wood {
         winnie.start();
     }
 
+    public void stopWinnie(){
+        winnie.interrupt();
+    }
+
     private void findWinnieInRow(int index)
     {
         boolean find = false;
         synchronized (winniePosition)
         {
             for (int i = 0;i < width; ++i)
-                if (winniePosition[index][i])
+                if (winniePosition[index][i]){
                     find = true;
+                    break;
+                }
         }
         winnieIsHere[index] = find;
     }
@@ -83,6 +89,7 @@ public class Wood {
             bees[i] = new Thread(()->{
                 findWinnieInRow(finalI);
             });
+            bees[i].start();
         }
         for (int i = 0;i < height; ++i) {
             try {
@@ -97,4 +104,6 @@ public class Wood {
 
         return false;
     }
+
+
 }
