@@ -3,22 +3,21 @@ package com.company;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Semaphore {
-    private int locker;
+    private boolean isLocked;
 
-    public Semaphore(int locker)
+    public Semaphore()
     {
-        this.locker = locker;
+        isLocked = false;
     }
 
     public synchronized void lock() throws InterruptedException {
-        if (locker == 0)
+        if (isLocked)
             this.wait();
-        --locker;
+        isLocked = true;
     }
 
     public synchronized void unlock() throws InterruptedException {
-        ++locker;
-        if (locker > 0)
-            this.notify();
+        isLocked = false;
+        this.notify();
     }
 }
