@@ -19,6 +19,7 @@ public class Wood {
         this.maxNumberOfIterations = maxNumberOfIterations;
         this.numberOfBees = numberOfBees;
         this.maxVolume = maxVolume;
+
     }
 
     void eatHoney(){
@@ -26,13 +27,13 @@ public class Wood {
             while (!Thread.interrupted())
             {
                 try {
-                    wakeUpWinnie.lock();
-                    giveHoney.lock();
+                    wakeUpWinnie.release();
+                    giveHoney.release();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 currentVolume = 0;
-                System.out.println("Cup is empty");
+                System.out.println("Cup #" + (numberOfIterations + 1) + " is empty");
 
                 ++numberOfIterations;
 
@@ -41,11 +42,7 @@ public class Wood {
                     bear.interrupt();
                     runningBees = false;
                 }
-                try {
-                    giveHoney.unlock();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                giveHoney.take();
             }
         });
         bear.start();
@@ -55,38 +52,38 @@ public class Wood {
     {
         runningBees = true;
 
+        giveHoney.take();
         bees = new Thread[numberOfBees];
         for (int i = 0;i < numberOfBees; ++i)
         {
-            int finalI = i;
             bees[i] = new Thread(() -> {
                 while (runningBees)
                 {
                     try {
-                        giveHoney.lock();
+                        giveHoney.release();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    System.out.println("Bee #" + finalI + " bring some honey");
-                    if (currentVolume+1 < maxVolume) {
+                    if (currentVolume < maxVolume){
                         ++currentVolume;
-                    }
-                    else{
-                        try {
-                            wakeUpWinnie.unlock();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                        if (currentVolume == maxVolume) {
+                            System.out.println("\nWake up Winnie!");
+                            wakeUpWinnie.take();
                         }
                     }
 
-                    try {
-                        giveHoney.unlock();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    giveHoney.take();
                 }
             });
             bees[i].start();
+        }
+    }
+
+    public void endWork(){
+        try {
+            bear.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }

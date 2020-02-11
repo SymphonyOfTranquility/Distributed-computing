@@ -1,23 +1,15 @@
 package com.company;
 
-import java.util.concurrent.locks.ReentrantLock;
-
 public class Semaphore {
-    private boolean isLocked;
+    private boolean signal = false;
 
-    public Semaphore()
-    {
-        isLocked = false;
-    }
-
-    public synchronized void lock() throws InterruptedException {
-        if (isLocked)
-            this.wait();
-        isLocked = true;
-    }
-
-    public synchronized void unlock() throws InterruptedException {
-        isLocked = false;
+    public synchronized void take() {
+        this.signal = true;
         this.notify();
+    }
+
+    public synchronized void release() throws InterruptedException {
+        while (!this.signal) wait();
+        this.signal = false;
     }
 }
