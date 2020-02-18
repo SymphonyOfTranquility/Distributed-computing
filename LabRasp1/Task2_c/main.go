@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-var monk []int = []int{1, 2, 5, 8, 12, 0, 5, 4, 5, 10, 2, 4}
+var monk = []int{1, 2, 5, 8, 12, 0, 5, 4, 5, 10, 2, 4}
 
 func getWinner(answer chan <- int, l, r int) {
 	if r == l{
