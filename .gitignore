@@ -38,6 +38,7 @@
 # .idea/modules
 # *.iml
 # *.ipr
+/**/**/.idea/**/workspace.xml
 
 # CMake
 cmake-build-*/
