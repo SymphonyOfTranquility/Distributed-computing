@@ -39,6 +39,7 @@
 **/.idea/workspace.xml
 # *.iml
 # *.ipr
+/**/**/.idea/**/workspace.xml
 
 # CMake
 cmake-build-*/

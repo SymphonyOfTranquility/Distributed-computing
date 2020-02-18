@@ -1,0 +1,25 @@
+Iteration #0
+bad bad good 
+bad good bad 
+bad good good 
+
+Iteration #1
+good good good 
+good good good 
+good good good 
+
+Iteration #2
+good good good 
+good good good 
+good good good 
+
+Iteration #3
+good good good 
+good good good 
+good good good 
+
+Iteration #4
+good good good 
+good good good 
+good good good 
+
