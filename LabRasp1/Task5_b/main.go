@@ -14,13 +14,11 @@ var lettersChange = map[uint8]uint8{
 	'D':'B',
 }
 
-var numberOfThreads = 4
+var numberOfThreads int
 var waiter sync.WaitGroup
-var mutex sync.Mutex
 var strings []string
-var barrier_stop = make(chan bool, 1)
-var barrier_start = make(chan bool, 1)
 var isRunning = true
+var barrier Barrier
 
 func randomFill(id, size int) {
 	for i := 0;i < size; i++ {
@@ -38,9 +36,8 @@ func randomFill(id, size int) {
 }
 
 func check() {
-	var sum []int
+	var sum = make([]int, numberOfThreads)
 	for id := 0; id < numberOfThreads; id++ {
-		sum = append(sum, 0)
 		for i := 0; i < len(strings[id]); i++ {
 			if strings[id][i] == 'A' || strings[id][i] == 'B' {
 				sum[id]++
@@ -60,36 +57,21 @@ func check() {
 	}
 }
 
-func barrier(checkFunc func()) {
-	for {
-		for i := 0;i < numberOfThreads; i++ {
-			<-barrier_start
-		}
-		checkFunc()
-		for i := 0;i < numberOfThreads; i++ {
-			barrier_stop <- true
-		}
-	}
-}
-
 func worker(id, size int) {
 	defer waiter.Done()
 	randomFill(id, size)
 
 	for ;isRunning;{
+		var change = rand.Intn(size)
 		if rand.Intn(2) == 1 {
-			var change = rand.Intn(size)
-			mutex.Lock()
 			var x = strings[id][change]
 			var prev = strings[id]
 			strings[id] = prev[:change] + string(lettersChange[x])
 			if change+1 < size {
-				strings[id] += prev[(change+1):]
+				strings[id] += prev[(change + 1):]
 			}
-			mutex.Unlock()
-			barrier_start <- true
-			<- barrier_stop
 		}
+		barrier.await()
 	}
 }
 
@@ -100,10 +82,10 @@ func main() {
 	waiter.Add(numberOfThreads)
 	defer waiter.Wait()
 
-	go barrier(check)
+	barrier = Barrier{make(chan bool, 1), make(chan bool, 1), numberOfThreads}
+	barrier.run(check)
 	var size = 10
 	for i := 0;i < numberOfThreads; i++ {
 		go worker(i, size)
 	}
-
 }
