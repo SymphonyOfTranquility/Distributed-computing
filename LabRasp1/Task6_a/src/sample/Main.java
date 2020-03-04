@@ -1,56 +1,68 @@
 package sample;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.StrokeType;
 import javafx.stage.Stage;
 
 public class Main extends Application {
 
     private final int SIZE = 40;
-    private Rectangle[][] rectangles;
+    private MyRectangles[][] rectEvents;
+    private GameLife gameLife;
 
     @Override
     public void start(Stage stage) throws Exception{
+        gameLife = new GameLife(SIZE);
 
-        rectangles = new Rectangle[SIZE][SIZE];
+        rectEvents = new MyRectangles[SIZE][SIZE];
         GridPane gridPane = new GridPane();
         for (int i = 0;i < SIZE; ++i)
         {
             for (int j = 0;j < SIZE; ++j) {
-                rectangles[i][j] = new Rectangle(15, 15);
-                rectangles[i][j].setStrokeType(StrokeType.INSIDE);
-                rectangles[i][j].setStroke(Color.BLACK);
-                rectangles[i][j].setFill(Color.web("0x2F4F4F"));
-                rectangles[i][j].setOnMouseClicked(new EventHanglerForRectangles(rectangles[i][j]));
-                gridPane.add(rectangles[i][j], i, j);
+                rectEvents[i][j] = new MyRectangles(15);
+                gridPane.add(rectEvents[i][j].getRectangle(), i, j);
             }
         }
         gridPane.setLayoutX(50);
         gridPane.setLayoutY(50);
 
         Button startButton = new Button("Start");
+        Button stopButton = new Button("Stop");
         startButton.setLayoutX(680);
         startButton.setLayoutY(50);
-        startButton.setPrefSize(50, 20);
-        Button stepButton = new Button("Step");
-        stepButton.setLayoutX(680);
-        stepButton.setLayoutY(80);
-        stepButton.setPrefSize(50, 20);
-        Button stopButton = new Button("Stop");
+        startButton.setPrefSize(60, 20);
+        startButton.setOnAction(event -> {
+            gameLife.start(rectEvents);
+            startButton.setDisable(true);
+            stopButton.setDisable(false);
+        });
+        stopButton.setOnAction(event -> {
+            gameLife.stop();
+            startButton.setDisable(false);
+            stopButton.setDisable(true);
+        });
         stopButton.setLayoutX(680);
-        stopButton.setLayoutY(110);
-        stopButton.setPrefSize(50, 20);
+        stopButton.setLayoutY(80);
+        stopButton.setPrefSize(60, 20);
+
+        Button stepButton = new Button("Angar");
+        stepButton.setLayoutX(680);
+        stepButton.setLayoutY(110);
+        stepButton.setPrefSize(60, 20);
+        stepButton.setOnAction(event -> {
+            if (startButton.isDisabled())
+                gameLife.stop();
+            for (int i = 0;i < SIZE; ++i)
+                for (int j = 0;j < SIZE; ++j)
+                    if (i%3 != 0 && j%3 != 0)
+                        rectEvents[i][j].setChanged(true);
+                    else
+                        rectEvents[i][j].setChanged(false);
+        });
 
         Group group = new Group();
         group.getChildren().add(gridPane);
