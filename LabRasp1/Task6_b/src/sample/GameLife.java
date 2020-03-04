@@ -40,10 +40,11 @@ public class GameLife {
 
             for (int i = 0;i < size; ++i) {
                 for (int j = 0;j < size; ++j){
-                    int sum = 0;
+                    int last = 0;
                     for (int k = 0;k < 4; ++k)
-                        sum += tempExists[k][i][j];
-                    exists[i][j] = sum;
+                        if (tempExists[k][i][j] != 0)
+                            last = tempExists[k][i][j];
+                    exists[i][j] = last;
                 }
             }
 

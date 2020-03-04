@@ -74,6 +74,17 @@ public class Worker implements Runnable {
         return true;
     }
 
+    private int checkAllMoreComplicated(int i, int j) {
+        int counter = 0;
+        for (int u = -1;u < 2; ++u)
+            for (int v = -1;v < 2; ++v)
+                if (i+u >= 0 && i+u < size && j+v >= 0 && j+v < size && exists[i+u][j+v] == workerId)
+                    ++counter;
+        if (exists[i][j] == workerId)
+            --counter;
+        return counter;
+    }
+
     public int[][] getExists(){
         return exists;
     }
@@ -86,11 +97,11 @@ public class Worker implements Runnable {
             {
                 for (int j = 0;j < size; ++j)
                 {
+                    locker.lock();
                     if (isFree(i, j)) {
-                        locker.lock();
                         tempAnswer[i][j] = checkAll(i, j);
-                        locker.unlock();
                     }
+                    locker.unlock();
                 }
             }
             try {

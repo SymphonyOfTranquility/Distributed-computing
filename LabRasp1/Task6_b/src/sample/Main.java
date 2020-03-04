@@ -51,7 +51,7 @@ public class Main extends Application {
 
         Button clearButton = new Button("Clear");
         clearButton.setLayoutX(680);
-        clearButton.setLayoutY(140);
+        clearButton.setLayoutY(110);
         clearButton.setPrefSize(60, 20);
         clearButton.setOnAction(event -> {
             if (startButton.isDisabled())

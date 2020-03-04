@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
@@ -15,9 +16,17 @@ public class MyRectangles {
         rectangle.setStroke(Color.BLACK);
         rectangle.setFill(colors[0]);
         rectangle.setOnMouseClicked(event -> {
-            changeColor();
+            if (event.getButton() == MouseButton.PRIMARY)
+                changeColor();
+            if(event.getButton() == MouseButton.SECONDARY)
+                reverseChangeColor();
         });
         curColor = 0;
+    }
+
+    private void reverseChangeColor() {
+        curColor = (curColor + 4)%5;
+        rectangle.setFill(colors[curColor]);
     }
 
     private void changeColor(){
