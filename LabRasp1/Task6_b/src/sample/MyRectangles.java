@@ -1,7 +1,5 @@
 package sample;
 
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
@@ -9,39 +7,36 @@ import javafx.scene.shape.StrokeType;
 
 public class MyRectangles {
     private Rectangle rectangle;
-    private boolean isChanged;
+    private int curColor;
+    private static Color[] colors = {Color.web("0x2F4F4F"), Color.CORAL, Color.YELLOW, Color.DODGERBLUE, Color.VIOLET};
     MyRectangles(int size){
         rectangle = new Rectangle(size, size);
         rectangle.setStrokeType(StrokeType.INSIDE);
         rectangle.setStroke(Color.BLACK);
-        rectangle.setFill(Color.web("0x2F4F4F"));
+        rectangle.setFill(colors[0]);
         rectangle.setOnMouseClicked(event -> {
             changeColor();
         });
-        isChanged = false;
+        curColor = 0;
     }
 
     private void changeColor(){
-        if (isChanged) {
-            rectangle.setFill(Color.web("0x2F4F4F"));
-            isChanged = false;
-        }
-        else {
-            isChanged = true;
-            rectangle.setFill(Color.LIGHTGRAY);
-        }
+        curColor = (curColor + 1)%5;
+        rectangle.setFill(colors[curColor]);
     }
 
     Rectangle getRectangle(){
         return rectangle;
     }
 
-    boolean getChanged(){
-        return isChanged;
+    int getColor(){
+        return curColor;
     }
 
-    void setChanged(boolean isChanged){
-        if (isChanged != this.isChanged)
-            changeColor();
+    void setColor(int curColor){
+        if (curColor != this.curColor) {
+            this.curColor = curColor;
+            rectangle.setFill(colors[curColor]);
+        }
     }
 }
