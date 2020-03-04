@@ -49,13 +49,15 @@ public class Main extends Application {
         stopButton.setLayoutY(80);
         stopButton.setPrefSize(60, 20);
 
-        Button stepButton = new Button("Angar");
-        stepButton.setLayoutX(680);
-        stepButton.setLayoutY(110);
-        stepButton.setPrefSize(60, 20);
-        stepButton.setOnAction(event -> {
+        Button angarButton = new Button("Angar");
+        angarButton.setLayoutX(680);
+        angarButton.setLayoutY(110);
+        angarButton.setPrefSize(60, 20);
+        angarButton.setOnAction(event -> {
             if (startButton.isDisabled())
                 gameLife.stop();
+            startButton.setDisable(false);
+            stopButton.setDisable(true);
             for (int i = 0;i < SIZE; ++i)
                 for (int j = 0;j < SIZE; ++j)
                     if (i%3 != 0 && j%3 != 0)
@@ -64,10 +66,25 @@ public class Main extends Application {
                         rectEvents[i][j].setChanged(false);
         });
 
+        Button clearButton = new Button("Clear");
+        clearButton.setLayoutX(680);
+        clearButton.setLayoutY(140);
+        clearButton.setPrefSize(60, 20);
+        clearButton.setOnAction(event -> {
+            if (startButton.isDisabled())
+                gameLife.stop();
+            startButton.setDisable(false);
+            stopButton.setDisable(true);
+            for (int i = 0;i < SIZE; ++i)
+                for (int j = 0;j < SIZE; ++j)
+                    rectEvents[i][j].setChanged(false);
+        });
+
         Group group = new Group();
         group.getChildren().add(gridPane);
         group.getChildren().add(startButton);
-        group.getChildren().add(stepButton);
+        group.getChildren().add(angarButton);
+        group.getChildren().add(clearButton);
         group.getChildren().add(stopButton);
         Scene scene = new Scene(group, 770, 700);
         scene.setFill(Color.GRAY);

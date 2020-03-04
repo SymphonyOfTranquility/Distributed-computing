@@ -57,7 +57,7 @@ public class GameLife {
                     rectangles[i][j].setChanged(exists[i][j]);
             }
             try {
-                Thread.sleep(200);
+                Thread.sleep(160);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
