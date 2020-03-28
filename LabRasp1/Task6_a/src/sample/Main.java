@@ -90,7 +90,7 @@ public class Main extends Application {
         scene.setFill(Color.GRAY);
         stage.setScene(scene);
 
-        stage.setTitle("Task1 a");
+        stage.setTitle("Task6 a");
 
         stage.show();
     }

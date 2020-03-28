@@ -116,18 +116,14 @@ public class Worker implements Runnable {
             }
             try {
                 barrier.await();
-            } catch (InterruptedException e) {
+            } catch (InterruptedException | BrokenBarrierException e) {
                 Thread.currentThread().interrupt();
-            } catch (BrokenBarrierException e) {
-                e.printStackTrace();
             }
             exists = tempAnswer;
             try {
                 barrierForShow.await();
-            } catch (InterruptedException e) {
+            } catch (InterruptedException | BrokenBarrierException e) {
                 Thread.currentThread().interrupt();
-            } catch (BrokenBarrierException e) {
-                e.printStackTrace();
             }
         }
     }

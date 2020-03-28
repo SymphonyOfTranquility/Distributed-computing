@@ -1,5 +1,6 @@
 package sample;
 
+import java.util.Random;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -9,6 +10,7 @@ public class GameLife {
     private Thread[] threadsCivil;
     private CyclicBarrier barrier, barrierForShow;
     private ReentrantLock locker;
+    private Random rand = new Random();
 
     public GameLife(int size){
         this.size = size;
@@ -41,10 +43,33 @@ public class GameLife {
             for (int i = 0;i < size; ++i) {
                 for (int j = 0;j < size; ++j){
                     int last = 0;
+                    int counter = 0;
                     for (int k = 0;k < 4; ++k)
-                        if (tempExists[k][i][j] != 0)
-                            last = tempExists[k][i][j];
-                    exists[i][j] = last;
+                        if (tempExists[k][i][j] != 0){
+                            last += tempExists[k][i][j];
+                            ++counter;
+                        }
+                    if (last == 0)
+                        exists[i][j] = 0;
+                    else if (counter > 1) {
+                        if (rand.nextInt(4) == 0)
+                            exists[i][j] = 0;
+                        else {
+                            boolean  p = false;
+                            for (int k = 0; k < 4; ++k)
+                                if (tempExists[k][i][j] != 0) {
+                                    if (rand.nextInt(2) == 0 || p) {
+                                        exists[i][j] = tempExists[k][i][j];
+                                        break;
+                                    }
+                                    else {
+                                        p = true;
+                                    }
+                                }
+                        }
+                    }
+                    else
+                        exists[i][j] = last;
                 }
             }
 
@@ -52,6 +77,8 @@ public class GameLife {
                 for (int j = 0;j < size; ++j)
                     rectangles[i][j].setColor(exists[i][j]);
             }
+            for (int i = 0;i < workers.length; ++i)
+                workers[i].setExists(exists);
             try {
                 Thread.sleep(160);
             } catch (InterruptedException e) {
