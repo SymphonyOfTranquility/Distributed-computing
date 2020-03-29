@@ -3,6 +3,7 @@ package sample;
 import javafx.application.Platform;
 import javafx.scene.image.ImageView;
 
+import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class DuckWorker implements Runnable {
@@ -13,28 +14,28 @@ public class DuckWorker implements Runnable {
     private ReentrantLock locker;
     private DuckImgView duck;
     private boolean canMove;
+    private ReadWriteLock overallStopMove;
 
     private ReentrantLock localLock;
 
-    DuckWorker(ReentrantLock locker, int direction, int speed, int currentPos, DuckImgView duck) {
+    DuckWorker(ReentrantLock locker, int direction, int speed, int currentPos, DuckImgView duck, ReadWriteLock overallStopMove) {
         this.locker = locker;
         this.direction = direction;
         this.speed = speed;
         this.duck = duck;
         this.currentPos = currentPos;
+        this.overallStopMove = overallStopMove;
         canMove = false;
         localLock = new ReentrantLock();
     }
 
     void setMove(boolean newVal) {
-        localLock.lock();
         canMove = newVal;
-        localLock.unlock();
     }
 
     @Override
     public void run() {
-        locker.lock();
+        overallStopMove.readLock().lock();
         if (!canMove) {
             synchronized (duck){
                 duck.setRandomStart();
@@ -48,9 +49,7 @@ public class DuckWorker implements Runnable {
                 canMove = true;
             }
         }
-        locker.unlock();
 
-        localLock.lock();
         if (canMove) {
             currentPos += direction * speed;
             if (currentPos > 1000 || currentPos < -200)
@@ -59,6 +58,6 @@ public class DuckWorker implements Runnable {
                 duck.setX(currentPos);
             }
         }
-        localLock.unlock();
+        overallStopMove.readLock().unlock();
     }
 }
