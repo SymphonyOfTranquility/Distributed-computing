@@ -87,8 +87,10 @@ public class Main extends Application {
                 bulletImg.setX(400);
                 bulletImg.setY(600);
                 bulletImg.setRotate(Math.atan2(-400+mouseEvent.getSceneX(), 600-mouseEvent.getSceneY())*180.0/Math.PI);
-                double bulletSpeedX = (400-mouseEvent.getSceneX())/150;
-                double bulletSpeedY = (600-mouseEvent.getSceneY())/150;
+                double sqrt = Math.sqrt((400-mouseEvent.getSceneX())*(400-mouseEvent.getSceneX()) +
+                        (600-mouseEvent.getSceneY())*(600-mouseEvent.getSceneY()))/3.5;
+                double bulletSpeedX = (400-mouseEvent.getSceneX())/sqrt;
+                double bulletSpeedY = (600-mouseEvent.getSceneY())/sqrt;
                 final boolean[] working = {true};
                 Runnable hunt = new Runnable() {
                     @Override
