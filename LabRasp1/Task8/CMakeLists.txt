@@ -4,7 +4,10 @@ project(Task8)
 find_package(MPI REQUIRED)
 
 include_directories(${MPI_INCLUDE_PATH})
-add_executable(Task8 main.c)
+set(CMAKE_C_COMPILER "/usr/bin/mpicc")
+set(CMAKE_CXX_COMPILER "/usr/bin/mpicc")
+
+add_executable(Task8 main.c TMatrix.h TMatrix.c)
 target_link_libraries(Task8 ${MPI_LIBRARIES})
 
 if(MPI_COMPILE_FLAGS)
