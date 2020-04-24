@@ -6,8 +6,8 @@ import (
 	"time"
 )
 
-var SIZE = 1000
-var processorsNum = 1
+var SIZE = 5000
+var processorsNum = 4
 
 var done = make(chan bool, 1)
 
